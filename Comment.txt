@@ -1,0 +1,78 @@
+Connection conl;
+PreparedStatement insert;
+
+==> Table Update
+
+        private void table_update(){
+        
+        int c ;
+         try {
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            conl = DriverManager.getConnection("jdbc:mysql://localhost/sr","root","");
+            
+            insert = conl.prepareStatement("select * from record");
+            
+            ResultSet rs = insert.executeQuery();
+            ResultSetMetaData rss = rs.getMetaData();
+            c= rss.getColumnCount();
+            DefaultTableModel DF = (DefaultTableModel) jTable1.getModel();
+            DF.setRowCount(0);
+            
+            while (rs.next()) {
+                Vector v2 = new Vector();
+                for (int ii = 1; ii <= c; ii++) {
+                    v2.add(rs.getString("id"));
+                    v2.add(rs.getString("name"));
+                    v2.add(rs.getString("mobile"));
+                    v2.add(rs.getString("course"));
+                }
+                DF.addRow(v2);
+            }
+            
+            txtname.setText("");
+            txtmobile.setText("");
+            txtcourse.setText("");
+            txtname.requestFocus();
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        }
+
+==> Add Button Clicked
+
+        String name = txtname.getText();
+        String mobile = txtmobile.getText();
+        String course = txtcourse.getText();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            conl = DriverManager.getConnection("jdbc:mysql://localhost/sr","root","");
+            
+            insert = conl.prepareStatement("insert into record(name,mobile,course)values(?,?,?)");
+            
+            insert.setString(1,name);
+            insert.setString(2,mobile);
+            insert.setString(3,course);
+            insert.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Record Added");
+            table_update();
+            
+            txtname.setText("");
+            txtmobile.setText("");
+            txtcourse.setText("");
+            txtname.requestFocus();
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
